@@ -93,6 +93,8 @@ function initialize() {
     initializeGrid : initializeGrid
   }
   sim = new CPM.Simulation(config, custommethods);
+  setAddCell();
+  setAddCells10();
   setRunToggler();
   step();
 }
@@ -110,7 +112,7 @@ function initializeGrid(){
 			this.gm.seedCellAt( 2, [i,j] )
 		}
 	}
-	// Seed 1 cancer cell
+	// Seed 1 cell
 	this.gm.seedCellAt( 1, [this.C.extents[1]/2, this.C.extents[1]/2] )
 }
 
@@ -129,4 +131,31 @@ function setRunToggler() {
       runButton.innerHTML = "stop ⏹";
     }
   })
+}
+
+// Function to add one cell when button is clicked
+function setAddCell() {
+  let runButton = document.getElementById("add-cell");
+  runButton.addEventListener("click", () => {
+    // Seed 1 cell
+	  seedCell( 1 )
+  })
+}
+
+// Function to add ten cells when button is clicked
+function setAddCells10() {
+  let runButton = document.getElementById("add-cell-10");
+  runButton.addEventListener("click", () => {
+    // Seed 10 cell
+	  seedCells( 10 )
+  })
+}
+
+function seedCell( k ){
+	sim.gm.seedCell(k)
+}
+function seedCells( ncells ){
+	for( let i = 0; i < ncells; i++ ){
+		seedCell( 1 )
+  }
 }
