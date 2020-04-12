@@ -48,9 +48,9 @@ let config = {
 
     // Adhesion parameters:
     J: [
-      [0, J_CELL_BACKGROUND, J_OBSTACLE_BACKGROUND],
-      [J_CELL_BACKGROUND, J_CELL_CELL, J_CELL_OBSTACLE],
-      [J_OBSTACLE_BACKGROUND, J_CELL_OBSTACLE, J_OBSTACLE_OBSTACLE]
+      [0, J_CELL_BACKGROUND, J_OBSTACLE_BACKGROUND], // Background
+      [J_CELL_BACKGROUND, J_CELL_CELL, J_CELL_OBSTACLE], // migrating cell
+      [J_OBSTACLE_BACKGROUND, J_CELL_OBSTACLE, J_OBSTACLE_OBSTACLE] // Obstacle cell
     ],
 
     // VolumeConstraint parameters
@@ -89,9 +89,29 @@ let config = {
 let sim;
 
 function initialize() {
-  sim = new CPM.Simulation(config);
+  let custommethods = {
+    initializeGrid : initializeGrid
+  }
+  sim = new CPM.Simulation(config, custommethods);
   setRunToggler();
   step();
+}
+
+/* The following custom methods will be added to the simulation object*/
+function initializeGrid(){
+
+	// add the initializer if not already there
+	if( !this.helpClasses["gm"] ){ this.addGridManipulator() }
+
+	// Seed obstacle cell layer
+	let step = 48
+	for( var i = 1 ; i < this.C.extents[0] ; i += step ){
+		for( var j = 1 ; j < this.C.extents[1] ; j += step ){
+			this.gm.seedCellAt( 2, [i,j] )
+		}
+	}
+	// Seed 1 cancer cell
+	this.gm.seedCellAt( 1, [this.C.extents[1]/2, this.C.extents[1]/2] )
 }
 
 function step() {
