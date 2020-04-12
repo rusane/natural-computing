@@ -107,7 +107,7 @@ function initializeGrid(){
 	// add the initializer if not already there
 	if( !this.helpClasses["gm"] ){ this.addGridManipulator() }
 
-	// Seed obstacle cell layer
+	// Seed obstacle cells
 	let step = 48
 	for( var i = 1 ; i < this.C.extents[0] ; i += step ){
 		for( var j = 1 ; j < this.C.extents[1] ; j += step ){
