@@ -95,6 +95,8 @@ function initialize() {
   sim = new CPM.Simulation(config, custommethods);
   setAddCell();
   setAddCells10();
+  setAddCells100();
+  setRemove();
   setRunToggler();
   step();
 }
@@ -135,8 +137,8 @@ function setRunToggler() {
 
 // Function to add one cell when button is clicked
 function setAddCell() {
-  let runButton = document.getElementById("add-cell");
-  runButton.addEventListener("click", () => {
+  let add1Button = document.getElementById("add-cell");
+  add1Button.addEventListener("click", () => {
     // Seed 1 cell
 	  seedCell( 1 )
   })
@@ -144,18 +146,58 @@ function setAddCell() {
 
 // Function to add ten cells when button is clicked
 function setAddCells10() {
-  let runButton = document.getElementById("add-cell-10");
-  runButton.addEventListener("click", () => {
+  let add10Button = document.getElementById("add-cell-10");
+  add10Button.addEventListener("click", () => {
     // Seed 10 cell
 	  seedCells( 10 )
+  })
+}
+
+// Function to add hundred cells when button is clicked
+function setAddCells100() {
+  let add100Button = document.getElementById("add-cell-100");
+  add100Button.addEventListener("click", () => {
+    // Seed 100 cell
+	  seedCells( 100 )
+  })
+}
+
+// Function to add hundred cells when button is clicked
+function setRemove() {
+  let removeButton = document.getElementById("remove");
+  removeButton.addEventListener("click", () => {
+    // Remove all cells
+    killAllCells()
+    // re-seed obstacles
+    createObstacles()
   })
 }
 
 function seedCell( k ){
 	sim.gm.seedCell(k)
 }
+
 function seedCells( ncells ){
 	for( let i = 0; i < ncells; i++ ){
 		seedCell( 1 )
   }
 }
+
+function killAllCells(){
+	let cells = Object.keys( sim.C.getStat( CPM.PixelsByCell ) )
+	if( cells.length == 0 ) return
+	for( let cp of sim.C.cellPixels() ){
+		sim.C.setpix( cp[0], 0 )
+	}
+}
+
+function createObstacles(){
+  // Seed obstacle cell layer
+	let step = 48
+	for( var i = 1 ; i < sim.C.extents[0] ; i += step ){
+		for( var j = 1 ; j < sim.C.extents[1] ; j += step ){
+			sim.gm.seedCellAt( 2, [i,j] )
+		}
+	}
+}
+
