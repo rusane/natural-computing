@@ -114,8 +114,6 @@ function initializeGrid(){
 			this.gm.seedCellAt( 2, [i,j] )
 		}
 	}
-	// Seed 1 cell
-	this.gm.seedCellAt( 1, [this.C.extents[1]/2, this.C.extents[1]/2] )
 }
 
 function step() {
