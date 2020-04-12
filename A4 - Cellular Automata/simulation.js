@@ -75,7 +75,7 @@ let config = {
     RUNTIME: 500,                     // Only used in node
 
     CANVASCOLOR: "eaecef",
-    CELLCOLOR: ["000000", "424242"],
+    CELLCOLOR: ["000000","ffffff","cccccc","cccccc"],
     ACTCOLOR: [true, false],			    // Should pixel activity values be displayed?
     SHOWBORDERS: [false, true],       // Should cellborders be displayed?
 
