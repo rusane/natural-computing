@@ -1,7 +1,7 @@
 "use strict"
 
 // Adhesion constants
-const CELL_VOLUME = 200;            // cell volume
+const CELL_VOLUME = 500;            // cell volume
 const J_CELL_BACKGROUND = 20;       // cell-matrix adhesion  
 const J_CELL_CELL = 0;              // cell-cell adhesion
 const J_CELL_OBSTACLE = 0;          // cell-obstacle adhesion 
@@ -13,7 +13,7 @@ let cell = {
   LAMBDA_V: 50,
   V: CELL_VOLUME,
   LAMBDA_P: 2,
-  P: 180,
+  P: 340,
   LAMBDA_ACT: 200,
   MAX_ACT: 80
 };
@@ -22,7 +22,7 @@ let cell = {
 let obstacle = {
   LAMBDA_V: 1000,
   V: 0.5 * CELL_VOLUME,
-  LAMBDA_P: 200,
+  LAMBDA_P: 1000,
   // compute perimeter of a circle given the volume
   get P() {
     return 2 * Math.PI * Math.sqrt(this.V / Math.PI);
@@ -34,7 +34,7 @@ let obstacle = {
 let config = {
   // Grid settings
   ndim: 2,
-  field_size: [200, 200],
+  field_size: [250, 250],
 
   // CPM parameters and configuration
   conf: {
@@ -70,18 +70,18 @@ let config = {
   // Simulation setup and configuration
   simsettings: {
     // Cells on the grid
-    NRCELLS: [20, 10],                // Number of cells to seed for all non-background cellkinds.
+    NRCELLS: [0, 0],                // Number of cells to seed for all non-background cellkinds.
 
     RUNTIME: 500,                     // Only used in node
 
     CANVASCOLOR: "eaecef",
-    CELLCOLOR: ["000000", "ffffff", "cccccc", "cccccc"],
-    ACTCOLOR: [true, false],			    // Should pixel activity values be displayed?
-    SHOWBORDERS: [false, true],       // Should cellborders be displayed?
+    CELLCOLOR: ["00ffbb", "333333"],
+    ACTCOLOR: [false, false],			    // Should pixel activity values be displayed?
+    SHOWBORDERS: [true, true],       // Should cellborders be displayed?
 
     zoom: 2,                          // zoom in on canvas with this factor
 
-    IMGFRAMERATE: 1
+    IMGFRAMERATE: 5
   }
 };
 
@@ -93,7 +93,6 @@ function initialize() {
     initializeGrid: initializeGrid
   }
   sim = new CPM.Simulation(config, custommethods);
-  console.log('hello');
   setAddCell();
   setAddCells10();
   setAddCells100();
@@ -113,16 +112,16 @@ function initializeGrid() {
   // add the initializer if not already there 
   if (!this.helpClasses["gm"]) { this.addGridManipulator() }
 
-  console.log(this.C)
   // Seed obstacle cells
   createObstacles(this)
 }
 
 function createObstacles(sim) {
   // Seed obstacle cell layer 
-  let step = 48
-  for (var i = 1; i < sim.C.extents[0]; i += step) {
-    for (var j = 1; j < sim.C.extents[1]; j += step) {
+  let step = 48;
+  let offset = Math.round(step/2);
+  for (var i = offset; i < sim.C.extents[0] - offset; i += step) {
+    for (var j = offset; j < sim.C.extents[1] - offset; j += step) {
       sim.gm.seedCellAt(2, [i, j])
     }
   }
