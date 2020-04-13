@@ -2,9 +2,9 @@
 
 // Adhesion constants
 const CELL_VOLUME = 200;            // cell volume
-const J_CELL_BACKGROUND = 20;       // cell-matrix adhesion
+const J_CELL_BACKGROUND = 20;       // cell-matrix adhesion  
 const J_CELL_CELL = 0;              // cell-cell adhesion
-const J_CELL_OBSTACLE = 0;          // cell-obstacle adhesion
+const J_CELL_OBSTACLE = 0;          // cell-obstacle adhesion 
 const J_OBSTACLE_BACKGROUND = 20;   // obstacle-matrix adhesion
 const J_OBSTACLE_OBSTACLE = 0;      // obstacle-obstacle adhesion
 
@@ -49,7 +49,7 @@ let config = {
     // Adhesion parameters:
     J: [
       [0, J_CELL_BACKGROUND, J_OBSTACLE_BACKGROUND], // Background
-      [J_CELL_BACKGROUND, J_CELL_CELL, J_CELL_OBSTACLE], // migrating cell
+      [J_CELL_BACKGROUND, J_CELL_CELL, J_CELL_OBSTACLE], // migrating cell 
       [J_OBSTACLE_BACKGROUND, J_CELL_OBSTACLE, J_OBSTACLE_OBSTACLE] // Obstacle cell
     ],
 
@@ -79,7 +79,7 @@ let config = {
     ACTCOLOR: [true, false],			    // Should pixel activity values be displayed?
     SHOWBORDERS: [false, true],       // Should cellborders be displayed?
 
-    zoom: 2,                          // zoom in on canvas with this factor.
+    zoom: 2,                          // zoom in on canvas with this factor
 
     IMGFRAMERATE: 1
   }
@@ -104,16 +104,21 @@ function initialize() {
 /* The following custom methods will be added to the simulation object*/
 function initializeGrid(){
 
-	// add the initializer if not already there
+	// add the initializer if not already there 
 	if( !this.helpClasses["gm"] ){ this.addGridManipulator() }
 
 	// Seed obstacle cells
-	let step = 48
-	for( var i = 1 ; i < this.C.extents[0] ; i += step ){
-		for( var j = 1 ; j < this.C.extents[1] ; j += step ){
-			this.gm.seedCellAt( 2, [i,j] )
-		}
-	}
+    createObstacles()
+}
+
+function createObstacles() {
+    // Seed obstacle cell layer 
+    let step = 48
+    for (var i = 1; i < sim.C.extents[0]; i += step) {
+        for (var j = 1; j < sim.C.extents[1]; j += step) {
+            sim.gm.seedCellAt(2, [i, j])
+        }
+    }
 }
 
 function step() {
@@ -188,14 +193,3 @@ function killAllCells(){
 		sim.C.setpix( cp[0], 0 )
 	}
 }
-
-function createObstacles(){
-  // Seed obstacle cell layer
-	let step = 48
-	for( var i = 1 ; i < sim.C.extents[0] ; i += step ){
-		for( var j = 1 ; j < sim.C.extents[1] ; j += step ){
-			sim.gm.seedCellAt( 2, [i,j] )
-		}
-	}
-}
-
