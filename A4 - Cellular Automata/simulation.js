@@ -48,9 +48,9 @@ let config = {
 
     // Adhesion parameters:
     J: [
-      [0, J_CELL_BACKGROUND, J_OBSTACLE_BACKGROUND], // Background
-      [J_CELL_BACKGROUND, J_CELL_CELL, J_CELL_OBSTACLE], // migrating cell 
-      [J_OBSTACLE_BACKGROUND, J_CELL_OBSTACLE, J_OBSTACLE_OBSTACLE] // Obstacle cell
+      [0, J_CELL_BACKGROUND, J_OBSTACLE_BACKGROUND],                  // Background
+      [J_CELL_BACKGROUND, J_CELL_CELL, J_CELL_OBSTACLE],              // Migrating cell 
+      [J_OBSTACLE_BACKGROUND, J_CELL_OBSTACLE, J_OBSTACLE_OBSTACLE]   // Obstacle cell
     ],
 
     // VolumeConstraint parameters
@@ -75,7 +75,7 @@ let config = {
     RUNTIME: 500,                     // Only used in node
 
     CANVASCOLOR: "eaecef",
-    CELLCOLOR: ["000000","ffffff","cccccc","cccccc"],
+    CELLCOLOR: ["000000", "ffffff", "cccccc", "cccccc"],
     ACTCOLOR: [true, false],			    // Should pixel activity values be displayed?
     SHOWBORDERS: [false, true],       // Should cellborders be displayed?
 
@@ -90,9 +90,10 @@ let sim;
 
 function initialize() {
   let custommethods = {
-    initializeGrid : initializeGrid
+    initializeGrid: initializeGrid
   }
   sim = new CPM.Simulation(config, custommethods);
+  console.log('hello');
   setAddCell();
   setAddCells10();
   setAddCells100();
@@ -101,29 +102,30 @@ function initialize() {
   step();
 }
 
-/* The following custom methods will be added to the simulation object*/
-function initializeGrid(){
-
-	// add the initializer if not already there 
-	if( !this.helpClasses["gm"] ){ this.addGridManipulator() }
-
-	// Seed obstacle cells
-    createObstacles()
-}
-
-function createObstacles() {
-    // Seed obstacle cell layer 
-    let step = 48
-    for (var i = 1; i < sim.C.extents[0]; i += step) {
-        for (var j = 1; j < sim.C.extents[1]; j += step) {
-            sim.gm.seedCellAt(2, [i, j])
-        }
-    }
-}
-
 function step() {
   sim.step();
   requestAnimationFrame(step);
+}
+
+/* The following custom methods will be added to the simulation object */
+function initializeGrid() {
+
+  // add the initializer if not already there 
+  if (!this.helpClasses["gm"]) { this.addGridManipulator() }
+
+  console.log(this.C)
+  // Seed obstacle cells
+  createObstacles(this)
+}
+
+function createObstacles(sim) {
+  // Seed obstacle cell layer 
+  let step = 48
+  for (var i = 1; i < sim.C.extents[0]; i += step) {
+    for (var j = 1; j < sim.C.extents[1]; j += step) {
+      sim.gm.seedCellAt(2, [i, j])
+    }
+  }
 }
 
 function setRunToggler() {
@@ -143,7 +145,7 @@ function setAddCell() {
   let add1Button = document.getElementById("add-cell");
   add1Button.addEventListener("click", () => {
     // Seed 1 cell
-	  seedCell( 1 )
+    seedCell(1)
   })
 }
 
@@ -151,8 +153,8 @@ function setAddCell() {
 function setAddCells10() {
   let add10Button = document.getElementById("add-cell-10");
   add10Button.addEventListener("click", () => {
-    // Seed 10 cell
-	  seedCells( 10 )
+    // Seed 10 cells
+    seedCells(10)
   })
 }
 
@@ -160,36 +162,36 @@ function setAddCells10() {
 function setAddCells100() {
   let add100Button = document.getElementById("add-cell-100");
   add100Button.addEventListener("click", () => {
-    // Seed 100 cell
-	  seedCells( 100 )
+    // Seed 100 cells
+    seedCells(100)
   })
 }
 
-// Function to add hundred cells when button is clicked
+function seedCell(k) {
+  sim.gm.seedCell(k)
+}
+
+function seedCells(ncells) {
+  for (let i = 0; i < ncells; i++) {
+    seedCell(1)
+  }
+}
+
+// Function to remove migrating cells when button is clicked
 function setRemove() {
   let removeButton = document.getElementById("remove");
   removeButton.addEventListener("click", () => {
     // Remove all cells
     killAllCells()
-    // re-seed obstacles
-    createObstacles()
+    // Re-seed obstacles
+    createObstacles(sim)
   })
 }
 
-function seedCell( k ){
-	sim.gm.seedCell(k)
-}
-
-function seedCells( ncells ){
-	for( let i = 0; i < ncells; i++ ){
-		seedCell( 1 )
+function killAllCells() {
+  let cells = Object.keys(sim.C.getStat(CPM.PixelsByCell))
+  if (cells.length == 0) return
+  for (let cp of sim.C.cellPixels()) {
+    sim.C.setpix(cp[0], 0)
   }
-}
-
-function killAllCells(){
-	let cells = Object.keys( sim.C.getStat( CPM.PixelsByCell ) )
-	if( cells.length == 0 ) return
-	for( let cp of sim.C.cellPixels() ){
-		sim.C.setpix( cp[0], 0 )
-	}
 }
