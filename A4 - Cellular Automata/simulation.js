@@ -90,9 +90,11 @@ let sim;
 
 function initialize() {
   let custommethods = {
-    initializeGrid: initializeGrid
+    initializeGrid: initializeGrid,
+    drawOnTop: drawOnTop
   }
   sim = new CPM.Simulation(config, custommethods);
+  Logger.open()
   setAddCell();
   setAddCells10();
   setAddCells100();
@@ -104,6 +106,7 @@ function initialize() {
 function step() {
   sim.step();
   requestAnimationFrame(step);
+  
 }
 
 /* The following custom methods will be added to the simulation object */
@@ -116,9 +119,16 @@ function initializeGrid() {
   createObstacles(this)
 }
 
+function drawOnTop() {
+  for (let [key, value] of Object.entries(this.C.getStat( CPM.CentroidsWithTorusCorrection ))) {
+    //log(`${key}: ${value}`);
+    this.Cim.drawPixelSet([value])
+  }
+}
+
 function createObstacles(sim) {
   // Seed obstacle cell layer 
-  let step = 48;
+  let step = 80;
   let offset = Math.round(step/2);
   for (var i = offset; i < sim.C.extents[0] - offset; i += step) {
     for (var j = offset; j < sim.C.extents[1] - offset; j += step) {
