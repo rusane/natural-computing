@@ -1,7 +1,7 @@
 "use strict"
 
 // Adhesion constants
-const CELL_VOLUME = 500;            // cell volume
+const CELL_VOLUME = 200;            // cell volume
 const J_CELL_BACKGROUND = 20;       // cell-matrix adhesion
 const J_CELL_CELL = 0;              // cell-cell adhesion
 const J_CELL_OBSTACLE = 0;          // cell-obstacle adhesion
@@ -13,7 +13,7 @@ let cell = {
   LAMBDA_V: 50,
   V: CELL_VOLUME,
   LAMBDA_P: 2,
-  P: 340,
+  P: 180,
   LAMBDA_ACT: 200,
   MAX_ACT: 80
 };
@@ -34,7 +34,7 @@ let obstacle = {
 let config = {
   // Grid settings
   ndim: 2,
-  field_size: [250, 250],
+  field_size: [125, 125],
 
   // CPM parameters and configuration
   conf: {
@@ -79,9 +79,9 @@ let config = {
     ACTCOLOR: [false, false],			    // Should pixel activity values be displayed?
     SHOWBORDERS: [true, true],       // Should cellborders be displayed?
 
-    zoom: 2,                          // zoom in on canvas with this factor
+    zoom: 4,                          // zoom in on canvas with this factor
 
-    IMGFRAMERATE: 1
+    IMGFRAMERATE: 5
   }
 };
 
@@ -138,7 +138,7 @@ function drawOnTop() {
 
 function createObstacles(sim) {
   // Seed obstacle cell layer
-  let step = 80;
+  let step = 36; // 12, 24, 36
   let offset = Math.round(step/2);
   for (var i = offset; i < sim.C.extents[0] - offset; i += step) {
     for (var j = offset; j < sim.C.extents[1] - offset; j += step) {
