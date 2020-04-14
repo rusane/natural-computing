@@ -25,7 +25,7 @@ let obstacle = {
   LAMBDA_P: 1000,
   // compute perimeter of a circle given the volume
   get P() {
-    return 2 * Math.PI * Math.sqrt(this.V / Math.PI);
+    return 2 * Math.PI * Math.cbrt(3 * this.V / (4 * Math.PI));
   },
   LAMBDA_ACT: 0,
   MAX_ACT: 0
