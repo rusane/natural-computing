@@ -138,7 +138,7 @@ function drawOnTop() {
 
 function createObstacles(sim) {
   // Seed obstacle cell layer
-  let step = 24;
+  let step = 80;
   let offset = Math.round(step/2);
   for (var i = offset; i < sim.C.extents[0] - offset; i += step) {
     for (var j = offset; j < sim.C.extents[1] - offset; j += step) {
