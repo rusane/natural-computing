@@ -1,7 +1,7 @@
 "use strict"
 
 // Adhesion constants
-const CELL_VOLUME = 500;            // cell volume
+const CELL_VOLUME = 200;            // cell volume
 const J_CELL_BACKGROUND = 20;       // cell-matrix adhesion
 const J_CELL_CELL = 0;              // cell-cell adhesion
 const J_CELL_OBSTACLE = 0;          // cell-obstacle adhesion
@@ -13,7 +13,7 @@ let cell = {
   LAMBDA_V: 50,
   V: CELL_VOLUME,
   LAMBDA_P: 2,
-  P: 340,
+  P: 180,
   LAMBDA_ACT: 200,
   MAX_ACT: 80
 };
@@ -25,7 +25,7 @@ let obstacle = {
   LAMBDA_P: 1000,
   // compute perimeter of a circle given the volume
   get P() {
-    return 2 * Math.PI * Math.sqrt(this.V / Math.PI);
+    return 2 * Math.PI * Math.cbrt(3 * this.V / (4 * Math.PI));
   },
   LAMBDA_ACT: 0,
   MAX_ACT: 0
@@ -34,7 +34,7 @@ let obstacle = {
 let config = {
   // Grid settings
   ndim: 2,
-  field_size: [250, 250],
+  field_size: [125, 125],
 
   // CPM parameters and configuration
   conf: {
@@ -79,9 +79,9 @@ let config = {
     ACTCOLOR: [false, false],			    // Should pixel activity values be displayed?
     SHOWBORDERS: [true, true],       // Should cellborders be displayed?
 
-    zoom: 2,                          // zoom in on canvas with this factor
+    zoom: 4,                          // zoom in on canvas with this factor
 
-    IMGFRAMERATE: 1
+    IMGFRAMERATE: 5
   }
 };
 
@@ -90,11 +90,13 @@ let sim;
 let obstacleNum = 0;
 let centroidCellIdHistory = [];
 let centroidCoordHistory = [];
+let chunks = []; // for recordings
+let recordNum = 1;
 
 function initialize() {
   let custommethods = {
     initializeGrid: initializeGrid,
-    // drawOnTop: drawOnTop
+    drawOnTop: drawOnTop
   }
   sim = new CPM.Simulation(config, custommethods);
   // Logger.open()
@@ -139,7 +141,7 @@ function drawOnTop() {
 
 function createObstacles(sim) {
   // Seed obstacle cell layer
-  let step = 80;
+  let step = 36; // 12, 24, 36
   let offset = Math.round(step / 2);
   for (var i = offset; i < sim.C.extents[0] - offset; i += step) {
     for (var j = offset; j < sim.C.extents[1] - offset; j += step) {
@@ -223,7 +225,6 @@ function killAllCells() {
  * https://stackoverflow.com/questions/50681683/how-to-save-canvas-animation-as-gif-or-webm
  */
 function startRecording() {
-  const chunks = [];
   const stream = sim.Cim.el.captureStream();
   const rec = new MediaRecorder(stream);
   rec.ondataavailable = e => chunks.push(e.data);
@@ -234,13 +235,18 @@ function startRecording() {
 function setRecordButton(rec) {
   let recordButton = document.getElementById("record")
   recordButton.addEventListener("click", () => {
-    let secDuration = document.getElementById("rec-duration").value;
+    let durationInput = document.getElementById("rec-duration");
+    let secDuration = durationInput.value;
+    durationInput.disabled = true;
     recordButton.textContent = "recording... ⏺"
     recordButton.disabled = true;
     rec.start();
     setTimeout(() => {
       rec.stop();
       recordButton.textContent = "recorded ⏺";
+      recordButton.disabled = false;
+      durationInput.disabled = false;
+      chunks = []
     }, Math.ceil(secDuration * 1000));
   });
 }
@@ -252,8 +258,9 @@ function exportVid(blob) {
   // document.body.appendChild(vid);
   const a = document.createElement('a');
   a.style.display = 'block';
-  a.download = 'capture.webm';
+  a.download = `capture${new Date(Date.now()).toISOString().substr(0, 19)}.webm`;
   a.href = vid.src;
-  a.textContent = 'Download capture';
+  a.textContent = `Download capture #${recordNum}`;
   document.body.appendChild(a);
+  recordNum++;
 }
