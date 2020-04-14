@@ -87,6 +87,7 @@ let config = {
 
 // Initialize simulation
 let sim;
+let obstacleNum = 0;
 let centroidCellIdHistory = [];
 let centroidCoordHistory = [];
 
@@ -126,7 +127,7 @@ function drawOnTop() {
     value[0] = Math.round(value[0]);
     value[1] = Math.round(value[1]);
     // console.log(`${key}: ${value}`);
-    if(key>9){
+    if(key>obstacleNum){
       centroidCellIdHistory.push(key);
       centroidCoordHistory.push(value);
     }
@@ -137,11 +138,12 @@ function drawOnTop() {
 
 function createObstacles(sim) {
   // Seed obstacle cell layer
-  let step = 80;
+  let step = 24;
   let offset = Math.round(step/2);
   for (var i = offset; i < sim.C.extents[0] - offset; i += step) {
     for (var j = offset; j < sim.C.extents[1] - offset; j += step) {
       sim.gm.seedCellAt(2, [i, j])
+      obstacleNum += 1;
     }
   }
 }
