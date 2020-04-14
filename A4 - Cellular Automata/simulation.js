@@ -1,10 +1,10 @@
-"use strict"
+﻿"use strict"
 
 // Adhesion constants
-const CELL_VOLUME = 500;            // cell volume
-const J_CELL_BACKGROUND = 20;       // cell-matrix adhesion  
+const CELL_VOLUME = 200;            // cell volume
+const J_CELL_BACKGROUND = 20;       // cell-matrix adhesion
 const J_CELL_CELL = 0;              // cell-cell adhesion
-const J_CELL_OBSTACLE = 0;          // cell-obstacle adhesion 
+const J_CELL_OBSTACLE = 0;          // cell-obstacle adhesion
 const J_OBSTACLE_BACKGROUND = 20;   // obstacle-matrix adhesion
 const J_OBSTACLE_OBSTACLE = 0;      // obstacle-obstacle adhesion
 
@@ -13,7 +13,7 @@ let cell = {
   LAMBDA_V: 50,
   V: CELL_VOLUME,
   LAMBDA_P: 2,
-  P: 340,
+  P: 180,
   LAMBDA_ACT: 200,
   MAX_ACT: 80
 };
@@ -25,7 +25,7 @@ let obstacle = {
   LAMBDA_P: 1000,
   // compute perimeter of a circle given the volume
   get P() {
-    return 2 * Math.PI * Math.sqrt(this.V / Math.PI);
+    return 2 * Math.PI * Math.cbrt(3 * this.V / (4 * Math.PI));
   },
   LAMBDA_ACT: 0,
   MAX_ACT: 0
@@ -34,14 +34,14 @@ let obstacle = {
 let config = {
   // Grid settings
   ndim: 2,
-  field_size: [250, 250],
+  field_size: [125, 125],
 
   // CPM parameters and configuration
   conf: {
     seed: 42, // Seed for random number generation
     T: 20,    // CPM temperature
 
-    // Constraint parameters. 
+    // Constraint parameters.
     // Mostly these have the format of an array in which each element specifies the
     // parameter value for one of the cellkinds on the grid.
     // First value is always cellkind 0 (the background) and is often not used.
@@ -49,7 +49,7 @@ let config = {
     // Adhesion parameters:
     J: [
       [0, J_CELL_BACKGROUND, J_OBSTACLE_BACKGROUND],                  // Background
-      [J_CELL_BACKGROUND, J_CELL_CELL, J_CELL_OBSTACLE],              // Migrating cell 
+      [J_CELL_BACKGROUND, J_CELL_CELL, J_CELL_OBSTACLE],              // Migrating cell
       [J_OBSTACLE_BACKGROUND, J_CELL_OBSTACLE, J_OBSTACLE_OBSTACLE]   // Obstacle cell
     ],
 
@@ -79,7 +79,7 @@ let config = {
     ACTCOLOR: [false, false],			    // Should pixel activity values be displayed?
     SHOWBORDERS: [true, true],       // Should cellborders be displayed?
 
-    zoom: 2,                          // zoom in on canvas with this factor
+    zoom: 4,                          // zoom in on canvas with this factor
 
     IMGFRAMERATE: 5
   }
@@ -87,15 +87,20 @@ let config = {
 
 // Initialize simulation
 let sim;
+let obstacleNum = 0;
+let centroidCellIdHistory = [];
+let centroidCoordHistory = [];
 
 function initialize() {
   let custommethods = {
-    initializeGrid: initializeGrid
+    initializeGrid: initializeGrid,
+    drawOnTop: drawOnTop
   }
   sim = new CPM.Simulation(config, custommethods);
+  // Logger.open()
   setAddCell();
   setAddCells10();
-  setAddCells100();
+  setAddCells50();
   setRemove();
   setRunToggler();
   step();
@@ -109,20 +114,36 @@ function step() {
 /* The following custom methods will be added to the simulation object */
 function initializeGrid() {
 
-  // add the initializer if not already there 
+  // add the initializer if not already there
   if (!this.helpClasses["gm"]) { this.addGridManipulator() }
+  if (!this.helpClasses["Cim"]) { this.addCanvas() }
 
   // Seed obstacle cells
   createObstacles(this)
 }
 
+function drawOnTop() {
+  for (let [key, value] of Object.entries(this.C.getStat( CPM.CentroidsWithTorusCorrection ))) {
+    value[0] = Math.round(value[0]);
+    value[1] = Math.round(value[1]);
+    // console.log(`${key}: ${value}`);
+    if(key>obstacleNum){
+      centroidCellIdHistory.push(key);
+      centroidCoordHistory.push(value);
+    }
+  }
+  this.Cim.drawPixelSet(centroidCoordHistory, "3159d4")
+  // this.Cim.drawPixelSet([value])
+}
+
 function createObstacles(sim) {
-  // Seed obstacle cell layer 
-  let step = 48;
+  // Seed obstacle cell layer
+  let step = 24; // 12, 24, 36
   let offset = Math.round(step/2);
   for (var i = offset; i < sim.C.extents[0] - offset; i += step) {
     for (var j = offset; j < sim.C.extents[1] - offset; j += step) {
       sim.gm.seedCellAt(2, [i, j])
+      obstacleNum += 1;
     }
   }
 }
@@ -158,11 +179,11 @@ function setAddCells10() {
 }
 
 // Function to add hundred cells when button is clicked
-function setAddCells100() {
-  let add100Button = document.getElementById("add-cell-100");
+function setAddCells50() {
+  let add100Button = document.getElementById("add-cell-50");
   add100Button.addEventListener("click", () => {
-    // Seed 100 cells
-    seedCells(100)
+    // Seed 50 cells
+    seedCells(50)
   })
 }
 
