@@ -94,7 +94,7 @@ let centroidCoordHistory = [];
 function initialize() {
   let custommethods = {
     initializeGrid: initializeGrid,
-    drawOnTop: drawOnTop
+    // drawOnTop: drawOnTop
   }
   sim = new CPM.Simulation(config, custommethods);
   // Logger.open()
@@ -104,6 +104,7 @@ function initialize() {
   setRemove();
   setRunToggler();
   step();
+  startRecording();
 }
 
 function step() {
@@ -123,11 +124,11 @@ function initializeGrid() {
 }
 
 function drawOnTop() {
-  for (let [key, value] of Object.entries(this.C.getStat( CPM.CentroidsWithTorusCorrection ))) {
+  for (let [key, value] of Object.entries(this.C.getStat(CPM.CentroidsWithTorusCorrection))) {
     value[0] = Math.round(value[0]);
     value[1] = Math.round(value[1]);
     // console.log(`${key}: ${value}`);
-    if(key>obstacleNum){
+    if (key > obstacleNum) {
       centroidCellIdHistory.push(key);
       centroidCoordHistory.push(value);
     }
@@ -139,7 +140,7 @@ function drawOnTop() {
 function createObstacles(sim) {
   // Seed obstacle cell layer
   let step = 80;
-  let offset = Math.round(step/2);
+  let offset = Math.round(step / 2);
   for (var i = offset; i < sim.C.extents[0] - offset; i += step) {
     for (var j = offset; j < sim.C.extents[1] - offset; j += step) {
       sim.gm.seedCellAt(2, [i, j])
@@ -214,4 +215,45 @@ function killAllCells() {
   for (let cp of sim.C.cellPixels()) {
     sim.C.setpix(cp[0], 0)
   }
+}
+
+/**
+ * Capture WebM video
+ * Adapted from:
+ * https://stackoverflow.com/questions/50681683/how-to-save-canvas-animation-as-gif-or-webm
+ */
+function startRecording() {
+  const chunks = [];
+  const stream = sim.Cim.el.captureStream();
+  const rec = new MediaRecorder(stream);
+  rec.ondataavailable = e => chunks.push(e.data);
+  rec.onstop = e => exportVid(new Blob(chunks, { type: 'video/webm' }));
+  setRecordButton(rec);
+}
+
+function setRecordButton(rec) {
+  let recordButton = document.getElementById("record")
+  recordButton.addEventListener("click", () => {
+    let secDuration = document.getElementById("rec-duration").value;
+    recordButton.textContent = "recording... ⏺"
+    recordButton.disabled = true;
+    rec.start();
+    setTimeout(() => {
+      rec.stop();
+      recordButton.textContent = "recorded ⏺";
+    }, Math.ceil(secDuration * 1000));
+  });
+}
+
+function exportVid(blob) {
+  const vid = document.createElement('video');
+  vid.src = URL.createObjectURL(blob);
+  // vid.controls = true;
+  // document.body.appendChild(vid);
+  const a = document.createElement('a');
+  a.style.display = 'block';
+  a.download = 'capture.webm';
+  a.href = vid.src;
+  a.textContent = 'Download capture';
+  document.body.appendChild(a);
 }
