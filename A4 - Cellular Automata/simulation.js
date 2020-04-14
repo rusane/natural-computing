@@ -2,9 +2,9 @@
 
 // Adhesion constants
 const CELL_VOLUME = 500;            // cell volume
-const J_CELL_BACKGROUND = 20;       // cell-matrix adhesion  
+const J_CELL_BACKGROUND = 20;       // cell-matrix adhesion
 const J_CELL_CELL = 0;              // cell-cell adhesion
-const J_CELL_OBSTACLE = 0;          // cell-obstacle adhesion 
+const J_CELL_OBSTACLE = 0;          // cell-obstacle adhesion
 const J_OBSTACLE_BACKGROUND = 20;   // obstacle-matrix adhesion
 const J_OBSTACLE_OBSTACLE = 0;      // obstacle-obstacle adhesion
 
@@ -41,7 +41,7 @@ let config = {
     seed: 42, // Seed for random number generation
     T: 20,    // CPM temperature
 
-    // Constraint parameters. 
+    // Constraint parameters.
     // Mostly these have the format of an array in which each element specifies the
     // parameter value for one of the cellkinds on the grid.
     // First value is always cellkind 0 (the background) and is often not used.
@@ -49,7 +49,7 @@ let config = {
     // Adhesion parameters:
     J: [
       [0, J_CELL_BACKGROUND, J_OBSTACLE_BACKGROUND],                  // Background
-      [J_CELL_BACKGROUND, J_CELL_CELL, J_CELL_OBSTACLE],              // Migrating cell 
+      [J_CELL_BACKGROUND, J_CELL_CELL, J_CELL_OBSTACLE],              // Migrating cell
       [J_OBSTACLE_BACKGROUND, J_CELL_OBSTACLE, J_OBSTACLE_OBSTACLE]   // Obstacle cell
     ],
 
@@ -81,12 +81,14 @@ let config = {
 
     zoom: 2,                          // zoom in on canvas with this factor
 
-    IMGFRAMERATE: 5
+    IMGFRAMERATE: 1
   }
 };
 
 // Initialize simulation
 let sim;
+let centroidCellIdHistory = [];
+let centroidCoordHistory = [];
 
 function initialize() {
   let custommethods = {
@@ -94,7 +96,7 @@ function initialize() {
     drawOnTop: drawOnTop
   }
   sim = new CPM.Simulation(config, custommethods);
-  Logger.open()
+  // Logger.open()
   setAddCell();
   setAddCells10();
   setAddCells100();
@@ -106,14 +108,14 @@ function initialize() {
 function step() {
   sim.step();
   requestAnimationFrame(step);
-  
 }
 
 /* The following custom methods will be added to the simulation object */
 function initializeGrid() {
 
-  // add the initializer if not already there 
+  // add the initializer if not already there
   if (!this.helpClasses["gm"]) { this.addGridManipulator() }
+  if (!this.helpClasses["Cim"]) { this.addCanvas() }
 
   // Seed obstacle cells
   createObstacles(this)
@@ -121,13 +123,20 @@ function initializeGrid() {
 
 function drawOnTop() {
   for (let [key, value] of Object.entries(this.C.getStat( CPM.CentroidsWithTorusCorrection ))) {
-    //log(`${key}: ${value}`);
-    this.Cim.drawPixelSet([value])
+    value[0] = Math.round(value[0]);
+    value[1] = Math.round(value[1]);
+    // console.log(`${key}: ${value}`);
+    if(key>9){
+      centroidCellIdHistory.push(key);
+      centroidCoordHistory.push(value);
+    }
   }
+  this.Cim.drawPixelSet(centroidCoordHistory, "3159d4")
+  // this.Cim.drawPixelSet([value])
 }
 
 function createObstacles(sim) {
-  // Seed obstacle cell layer 
+  // Seed obstacle cell layer
   let step = 80;
   let offset = Math.round(step/2);
   for (var i = offset; i < sim.C.extents[0] - offset; i += step) {
