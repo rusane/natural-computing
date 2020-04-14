@@ -1,4 +1,4 @@
-"use strict"
+﻿"use strict"
 
 // Adhesion constants
 const CELL_VOLUME = 200;            // cell volume
@@ -100,7 +100,7 @@ function initialize() {
   // Logger.open()
   setAddCell();
   setAddCells10();
-  setAddCells100();
+  setAddCells50();
   setRemove();
   setRunToggler();
   step();
@@ -179,11 +179,11 @@ function setAddCells10() {
 }
 
 // Function to add hundred cells when button is clicked
-function setAddCells100() {
-  let add100Button = document.getElementById("add-cell-100");
+function setAddCells50() {
+  let add100Button = document.getElementById("add-cell-50");
   add100Button.addEventListener("click", () => {
-    // Seed 100 cells
-    seedCells(100)
+    // Seed 50 cells
+    seedCells(50)
   })
 }
 
