@@ -46,8 +46,18 @@ def preprocess(df):
         df[c] = df[c].apply(lambda x: None if x == ' ' or '<' in x or '>' in x else x)
         df[c] = df[c].astype(float)
     
-    # convert "DX_bl" and "DX" to categorical values
-    df[['DX_bl', 'DX']] = df[['DX_bl', 'DX']].apply(LabelEncoder().fit_transform)
+    # convert "DX_bl" to categorical values
+    df = df.drop(columns=['DX'])
+    
+    # Reduce to 3 categories: AD, MCI, CN
+    df = df.replace('LMCI', 'MCI')
+    df = df.replace('EMCI', 'MCI')
+    df = df.replace('SMC', 'MCI')
+    
+    le = LabelEncoder()
+    df[['DX_bl']] = df[['DX_bl']].apply(le.fit_transform)
+    keys = [0, 1, 2]
+    label_dict = dict(zip(keys, le.inverse_transform(keys)))
     
     # handle missing data (imputation by interpolation)
     impcols = [c for c in df.columns if c not in ['RID', 'DX_bl']]
@@ -58,8 +68,7 @@ def preprocess(df):
     # normalize data
     contcols = [c for c in df.columns if df[c].dtype == np.float64]
     df[contcols] = MinMaxScaler().fit_transform(df[contcols])
-    
-    return df
+    return df, label_dict
 
 
 def get_data(path):
@@ -72,12 +81,13 @@ def get_data(path):
   Returns [(np.ndarray, np.ndarray)]:
     X = features
     y = labels
+    label_dict = label dictionary
   """
   df = pd.read_csv(path + "TADPOLE_D1_D2.csv")
-  df = preprocess(df)
-  X = df.drop(columns=['DX_bl', 'RID', 'DX', 'ADAS13', 'Ventricles']).to_numpy()
+  df, label_dict = preprocess(df)
+  X = df.drop(columns=['DX_bl', 'RID', 'ADAS13', 'Ventricles']).to_numpy()
   y = df['DX_bl'].to_numpy()
-  return X, y
+  return X, y, label_dict
 
 
 if __name__ == "__main__":
