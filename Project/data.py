@@ -14,7 +14,8 @@ def preprocess(df, isCorr = False):
     Preprocesses the data.
 
     Args:
-      df = [pd.DataFrame] `TADPOLE_D1_D2.csv` as a dataframe
+      df     = [pd.DataFrame] `TADPOLE_D1_D2.csv` as a dataframe
+      isCorr = [boolean] if True, remove correlated features
 
     Returns [pd.DataFrame]:
       df = preprocessed data
@@ -45,7 +46,9 @@ def preprocess(df, isCorr = False):
     # TAU_UPENNBIOMK9_04_19_17 (tau level), PTAU_UPENNBIOMK9_04_19_17 (phosphorylated tau level)
     
     if isCorr:
-        df = df.drop(columns=["ADAS11", "Entorhinal", "MidTemp", "Hippocampus", "TAU_UPENNBIOMK9_04_19_17", "PTAU_UPENNBIOMK9_04_19_17", "MMSE"])
+        df = df.drop(columns=["ADAS11","MMSE" 
+                              "Entorhinal", "MidTemp", "Hippocampus", 
+                              "TAU_UPENNBIOMK9_04_19_17", "PTAU_UPENNBIOMK9_04_19_17"])
         
     # filter out only baseline visits
     df = df[df["VISCODE"] == "bl"].reset_index(drop=True).drop(columns='VISCODE')
@@ -96,6 +99,7 @@ def get_data(path, isCorr = False):
 
   Args:
     path = [string] the directory in which `TADPOLE_D1_D2.csv` resides
+    isCorr = [boolean] if True, remove correlated features
 
   Returns [(np.ndarray, np.ndarray)]:
     X = features
@@ -107,16 +111,7 @@ def get_data(path, isCorr = False):
   X = df.drop(columns=['DX_bl', 'RID', 'ADAS13', 'Ventricles']).to_numpy()
   y = df['DX_bl'].to_numpy()
   return X, y, label_dict
-
-def remove_correlation():
-    """
-    Based on correlation +- 0.5 removes features and only leaves one feature per class of biomarkers
-    
-    Args:
-    
-    Return:
-    """
-    
+ 
 
 if __name__ == "__main__":
     pass
