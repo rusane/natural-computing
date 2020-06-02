@@ -46,7 +46,7 @@ def preprocess(df, isCorr = False):
     # TAU_UPENNBIOMK9_04_19_17 (tau level), PTAU_UPENNBIOMK9_04_19_17 (phosphorylated tau level)
     
     if isCorr:
-        df = df.drop(columns=["ADAS11","MMSE" 
+        df = df.drop(columns=["ADAS11","MMSE", 
                               "Entorhinal", "MidTemp", "Hippocampus", 
                               "TAU_UPENNBIOMK9_04_19_17", "PTAU_UPENNBIOMK9_04_19_17"])
         
