@@ -138,7 +138,8 @@ class Tadpole():
         if self.debug:
             print("splitting dataset to train and test datasets")
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, 
-                                                                                test_size=test_size, random_state=0)
+                                                                                test_size=test_size, 
+                                                                                random_state=0, stratify=self.y)
         
     def save(self, model, modelname):
         """
