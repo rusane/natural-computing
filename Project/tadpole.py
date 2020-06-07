@@ -154,7 +154,7 @@ class Tadpole():
         with open(self.savepath + modelname, 'wb') as file:
             pickle.dump(model, file)
     
-    def gridsearch(self, param_grid, clf, k=5, n_jobs=4, verbose=2):
+    def gridsearch(self, param_grid, clf, scoring=None, k=5, n_jobs=4, verbose=2):
         """
         Description:
             method to perform Grid Search CV
@@ -168,6 +168,6 @@ class Tadpole():
         """
         if self.debug:
             print("performing grid search")
-        cv_clf = GridSearchCV(clf, param_grid, n_jobs=n_jobs, cv=k, verbose=verbose)
+        cv_clf = GridSearchCV(clf, param_grid, scoring=scoring, refit='AUC', n_jobs=n_jobs, cv=k, verbose=verbose)
         cv_clf.fit(self.X_train, self.y_train)
         return cv_clf
