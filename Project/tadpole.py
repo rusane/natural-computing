@@ -168,6 +168,6 @@ class Tadpole():
         """
         if self.debug:
             print("performing grid search")
-        cv_clf = GridSearchCV(clf, param_grid, scoring=scoring, refit='AUC', n_jobs=n_jobs, cv=k, verbose=verbose)
+        cv_clf = GridSearchCV(clf, param_grid, scoring=scoring, refit='BA', n_jobs=n_jobs, cv=k, verbose=verbose)
         cv_clf.fit(self.X_train, self.y_train)
         return cv_clf
