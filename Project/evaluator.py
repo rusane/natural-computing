@@ -6,14 +6,17 @@ from classifier import Classifier
 
 
 class Evaluator:
+    """Evaluate a classifier on the Tadpole dataset."""
+
+
     def __init__(self, clf, data, n_runs=30):
         """
-        Initialize Evaluator.
+        Initialize Evaluator instance.
 
         Args:
-            clf     = [Classifier] classifier instance
-            data    = [Tadpole] tadpole dataset class instance
-            n_runs  = [int] number of evaluation runs (default=30)
+            clf    = [Classifier] classifier instance
+            data   = [Tadpole] tadpole dataset class instance
+            n_runs = [int] number of evaluation runs (default=30)
         """
         self.clf = clf
         self.data = data
@@ -22,6 +25,7 @@ class Evaluator:
 
 
     def evaluate(self):
+        """Evaluate the classifier."""
         for i in tqdm(range(self.n_runs)):         
             X_train, X_test, y_train, y_test = self.data.split(random_state=i)
             BCA_train, BCA_test, mAUC_train, mAUC_test = self.clf.fit_predict(X_train, 
@@ -37,9 +41,21 @@ class Evaluator:
 
 
     def get_scores(self):
+        """
+        Get the scores as a pandas dataframe.
+
+        Returns [pd.DataFrame]:
+            Dataframe of the scores.
+        """
         return pd.DataFrame(self.scores)
 
 
-    def export_to_csv(self, filename):         
+    def export_to_csv(self, filename):    
+        """
+        Export the scores to a CSV file.
+
+        Args:
+            filename = [string] filename including path
+        """     
         df = self.get_scores()
         df.to_csv(filename, index=False)
