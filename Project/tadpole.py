@@ -133,7 +133,7 @@ class Tadpole():
         self.X = self.df.drop(columns=['DX_bl', 'RID', 'ADAS13', 'Ventricles']).to_numpy()
         self.y = self.df['DX_bl'].to_numpy()
     
-    def split(self, random_state=0, test_size=0.2):
+    def split(self, random_state=0, test_size=0.2, sfm_file="sfm_1.pkl"):
         """
         Description:
             method to split dataset into train and test
@@ -144,6 +144,7 @@ class Tadpole():
                                                                                 test_size=test_size, 
                                                                                 random_state=random_state, 
                                                                                 stratify=self.y)
+        self.refit_data(sfm_file)
         return self.X_train, self.X_test, self.y_train, self.y_test                                                                                
         
     def save(self, model, modelname):
@@ -158,6 +159,21 @@ class Tadpole():
             print("saving trained model")
         with open(self.savepath + modelname, 'wb') as file:
             pickle.dump(model, file)
+    
+    def refit_data(self, sfm_file):
+        """
+        Description:
+            function to refit data based on fitted SelectFromModel
+        
+        Arguments:
+            sfm_file (str) - file name of sfm model
+                sfm_1.pkl: threshold = 0.04
+                sfm_2.pkl: threshold = 0.01
+        """
+        with open(self.savepath + sfm_file, 'rb') as file:
+            sfm = pickle.load(file)
+        self.X_train = sfm.transform(self.X_train)
+        self.X_test = sfm.transform(self.X_test)
     
     def gridsearch(self, param_grid, clf, scoring=None, k=5, n_jobs=4, verbose=2):
         """
