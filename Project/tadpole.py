@@ -133,7 +133,7 @@ class Tadpole():
         self.X = self.df.drop(columns=['DX_bl', 'RID', 'ADAS13', 'Ventricles']).to_numpy()
         self.y = self.df['DX_bl'].to_numpy()
     
-    def split(self, random_state=0, test_size=0.2, sfm_file="sfm_1.pkl"):
+    def split(self, random_state=0, test_size=0.2, sfm_file="sfm_2.pkl"):
         """
         Description:
             method to split dataset into train and test
@@ -171,7 +171,7 @@ class Tadpole():
                 sfm_2.pkl: threshold = 0.01
         """
         if self.debug:
-            print("refit data")
+            print("refitting data")
         with open(self.savepath + sfm_file, 'rb') as file:
             sfm = pickle.load(file)
         self.X_train = sfm.transform(self.X_train)
