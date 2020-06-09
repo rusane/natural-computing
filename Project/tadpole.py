@@ -170,6 +170,8 @@ class Tadpole():
                 sfm_1.pkl: threshold = 0.04
                 sfm_2.pkl: threshold = 0.01
         """
+        if self.debug:
+            print("refit data")
         with open(self.savepath + sfm_file, 'rb') as file:
             sfm = pickle.load(file)
         self.X_train = sfm.transform(self.X_train)
