@@ -24,6 +24,9 @@ class Tadpole():
         self.savepath = savepath
         self.isCorr   = isCorr
         self.debug    = debug
+
+        # load data on initialization
+        self.load() 
     
     def preprocess(self, df, isCorr):
         """
@@ -141,6 +144,7 @@ class Tadpole():
                                                                                 test_size=test_size, 
                                                                                 random_state=random_state, 
                                                                                 stratify=self.y)
+        return self.X_train, self.X_test, self.y_train, self.y_test                                                                                
         
     def save(self, model, modelname):
         """

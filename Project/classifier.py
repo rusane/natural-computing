@@ -3,7 +3,7 @@ from sklearn.metrics import balanced_accuracy_score, roc_auc_score, confusion_ma
 from matplotlib import pyplot as plt
 
 
-class Classifier():
+class Classifier:
     def __init__(self, clf, params={}):
         """
         Generic classifier class.
