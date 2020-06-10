@@ -13,7 +13,7 @@ class Classifier:
 
         Args:
             clf    = [sklearn.base.BaseEstimator] classifier instance
-            params = [dict] clasifier parameters
+            params = [dict] classifier parameters
         """
         self.clf = clf
         self.clf.set_params(**params)
