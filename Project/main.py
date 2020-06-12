@@ -10,9 +10,7 @@ params = {
             'max_features': 'log2', 
             'min_samples_leaf': 0.1, 
             'min_samples_split': 0.1, 
-            'splitter': 'best'},  
-    
-#     'dtc': {},
+            'splitter': 'best'},
     
     'svc': {'C': 1000, 
             'class_weight': 'balanced',
