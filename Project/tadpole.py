@@ -133,7 +133,7 @@ class Tadpole():
         self.X = self.df.drop(columns=['DX_bl', 'RID', 'ADAS13', 'Ventricles']).to_numpy()
         self.y = self.df['DX_bl'].to_numpy()
     
-    def split(self, random_state=0, test_size=0.2, sfm_file="sfm_2.pkl"):
+    def split(self, random_state=0, test_size=0.2, sfm_file="sfm_2.pkl", refit=False):
         """
         Description:
             method to split dataset into train and test
@@ -144,7 +144,8 @@ class Tadpole():
                                                                                 test_size=test_size, 
                                                                                 random_state=random_state, 
                                                                                 stratify=self.y)
-        self.refit_data(sfm_file)
+        if refit:
+            self.refit_data(sfm_file)
         return self.X_train, self.X_test, self.y_train, self.y_test                                                                                
         
     def save(self, model, modelname):
