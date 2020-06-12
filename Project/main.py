@@ -29,7 +29,34 @@ params = {
             'alpha': 0.05, 
             'hidden_layer_sizes': (50, 50, 50), 
             'learning_rate': 'adaptive', 
-            'solver': 'adam'}
+            'solver': 'adam'},
+    
+    'refit_dtc': {'class_weight': 'balanced', 
+                  'criterion': 'entropy', 
+                  'max_depth': None, 
+                  'max_features': 'auto', 
+                  'min_samples_leaf': 0.1, 
+                  'min_samples_split': 0.2, 
+                  'splitter': 'best'},
+    
+    'refit_svc': {'C': 10, 
+                  'class_weight': 'balanced', 
+                  'gamma': 0.001, 
+                  'kernel': 'linear', 
+                  'tol': 0.1},
+    
+    'refit_lra': {'C': 3792.690190732246, 
+                  'class_weight': 'balanced', 
+                  'dual': False, 
+                  'penalty': 'l2', 
+                  'solver': 'sag', 
+                  'tol': 0.01},
+    
+    'refit_ann': {'activation': 'tanh', 
+                  'alpha': 0.0001, 
+                  'hidden_layer_sizes': (50, 100, 50), 
+                  'learning_rate': 'constant', 
+                  'solver': 'adam'}
 }
 
 
