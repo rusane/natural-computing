@@ -64,7 +64,7 @@ def get_params(key):
     return params[key]
 
 
-def run(clf, data, n_runs=30, output=None):    
+def run(clf, data, n_runs=30, output=None, refit=False):    
     """
     Run the evaluation of a classifier for n times.
 
@@ -77,7 +77,7 @@ def run(clf, data, n_runs=30, output=None):
     Returns [pd.DataFrame]:
         Scores from the evaluation of the classifier.
     """
-    evaluator = Evaluator(clf, data, n_runs=n_runs)
+    evaluator = Evaluator(clf, data, n_runs=n_runs, refit=refit)
     evaluator.evaluate()
     if output:
         evaluator.export_to_csv(output)

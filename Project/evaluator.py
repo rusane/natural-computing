@@ -9,7 +9,7 @@ class Evaluator:
     """Evaluate a classifier on the Tadpole dataset."""
 
 
-    def __init__(self, clf, data, n_runs=30):
+    def __init__(self, clf, data, n_runs=30, refit=False):
         """
         Initialize Evaluator instance.
 
@@ -22,12 +22,13 @@ class Evaluator:
         self.data = data
         self.n_runs = n_runs
         self.scores = []
-
+        self.refit = refit
 
     def evaluate(self):
         """Evaluate the classifier."""
         for i in tqdm(range(self.n_runs)):         
-            X_train, X_test, y_train, y_test = self.data.split(random_state=i)
+            X_train, X_test, y_train, y_test = self.data.split(random_state=i, 
+                                                               refit=self.refit)
             BCA_train, BCA_test, mAUC_train, mAUC_test = self.clf.fit_predict(X_train, 
                                                                               y_train, 
                                                                               X_test, 
