@@ -4,7 +4,15 @@ from evaluator import Evaluator
 Optimal parameters from grid search for each base learner.
 """
 params = {
-    'dtc': {},   
+    'dtc': {'class_weight': 'balanced', 
+            'criterion': 'gini', 
+            'max_depth': 8, 
+            'max_features': 'log2', 
+            'min_samples_leaf': 0.1, 
+            'min_samples_split': 0.1, 
+            'splitter': 'best'},  
+    
+#     'dtc': {},
     
     'svc': {'C': 1000, 
             'class_weight': 'balanced',
