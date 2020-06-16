@@ -56,7 +56,34 @@ params = {
                   'alpha': 0.0001, 
                   'hidden_layer_sizes': (50, 100, 50), 
                   'learning_rate': 'constant', 
-                  'solver': 'adam'}
+                  'solver': 'adam'},
+    
+    'corr_dtc': {'class_weight': 'balanced', 
+                 'criterion': 'gini', 
+                 'max_depth': 7, 
+                 'max_features': 'log2', 
+                 'min_samples_leaf': 0.1, 
+                 'min_samples_split': 0.3, 
+                 'splitter': 'best'},
+    
+    'corr_svc': {'C': 1000, 
+                 'class_weight': 'balanced', 
+                 'gamma': 0.001, 
+                 'kernel': 'linear', 
+                 'tol': 0.1},
+    
+    'corr_lra': {'C': 78.47599703514607, 
+                 'class_weight': 'balanced', 
+                 'dual': False, 
+                 'penalty': 'l2', 
+                 'solver': 'newton-cg', 
+                 'tol': 1},
+    
+    'corr_ann': {'activation': 'tanh', 
+                 'alpha': 0.0001, 
+                 'hidden_layer_sizes': (50, 50, 50), 
+                 'learning_rate': 'adaptive', 
+                 'solver': 'adam'}
 }
 
 
