@@ -8,6 +8,14 @@ Ajinkya Indulkar
 
 Richard Li
 
+### Packages Used:
+* pandas (data manipulation)
+* numpy (data manipulation)
+* sklearn (model training)
+* mlxtend (model training)
+* matplotlib (visualization tool)
+* seaborn (visualization tool)
+
 ## Project Description:
 ### Exploratory Data Analysis (EDA)
 We initially conducted EDA on the TADPOLE dataset to observe relevant features, correlations and missing/corrupted data. We conducted this, including the correlation experiment, in [Exploratory Data Analysis.ipynb](https://github.com/rusane/natural-computing/blob/master/Project/Exploratory%20Data%20Analysis.ipynb). There also exists some discarded notebooks in the `legacy` folder of the project.
